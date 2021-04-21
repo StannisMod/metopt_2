@@ -1,30 +1,30 @@
 #include <iostream>
-#include <cstdlib>
+#include <functional>
 
-#include "vector_functions.h"
+#include "functions.h"
 
-double f(vec x) {
-
-}
-
-vector<double> runGradient(const vec& x) {
-
-}
-
-double normal(const vec& x) {
-    return sqrt(x * x);
-}
-
-pair<vector<double>, double> gradientDrop(double eps) {
-    vector<double> x;
-    vector<double> grad;
-    double alpha = 1.0;
-    while (normal(grad = runGradient(x)) > eps) {
-        vector<double> y = x - alpha * grad;
+void test(const string& name, const function<result(double)>& tester, double eps) {
+    result res = tester(eps);
+    cout << "Testing " << name << " with EPS = " << eps << endl;
+    cout << "Result: " << res.x << endl;
+    cout << "Iterations: " << res.iterations.size() << endl;
+    for (const vec& it : res.iterations) {
+        cout << it;
     }
-    return make_pair(x, f(x));
+    cout << endl;
+}
+
+void test(const string& name, const function<result(double)>& tester, int iterations) {
+    double eps = 1;
+    for (int i = 0; i < iterations; i++) {
+        test(name, tester, eps);
+        eps *= 0.1;
+    }
 }
 
 int main() {
+    test("gradient drop", gradientDrop, 10);
+    test("fastest drop", fastestDrop, 10);
+    test("conjugate gradients", conjugateGradients, 10);
     return 0;
 }
