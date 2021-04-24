@@ -1,30 +1,17 @@
-#include <iostream>
 #include <functional>
+#include <cmath>
+#include "dichotomy_method.h"
+#include "golden_ratio_method.h"
+#include "fibonacci_method.h"
+#include "parabola_method.h"
+#include "brent_method.h"
+#include "steps_printer.h"
+#include "steepest_descent.h"
 
-#include "functions.h"
-
-void test(const string& name, const function<result(double)>& tester, double eps) {
-    result res = tester(eps);
-    cout << "Testing " << name << " with EPS = " << eps << endl;
-    cout << "Result: " << res.x << endl;
-    cout << "Iterations: " << res.iterations.size() << endl;
-    for (const vec& it : res.iterations) {
-        cout << it;
-    }
-    cout << endl;
-}
-
-void test(const string& name, const function<result(double)>& tester, int iterations) {
-    double eps = 1;
-    for (int i = 0; i < iterations; i++) {
-        test(name, tester, eps);
-        eps *= 0.1;
-    }
-}
 
 int main() {
-    test("gradient drop", gradientDrop, 10);
-    test("fastest drop", fastestDrop, 10);
-    test("conjugate gradients", conjugateGradients, 10);
+    quadratic_function func(2, 0.5, 0.5, 1);
+    auto result = steepest_gradient_descent(func, 1e-5, {0.5, 1});
+    cout << result.point.first << " " << result.point.second;
     return 0;
 }
